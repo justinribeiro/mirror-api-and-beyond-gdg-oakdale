@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>Mirror API and beyond / GDG Oakdale </title>
+
+    <meta name="description" content="Presentation slides for Mirror API and beyond for GDG Oakdale">
+    <meta name="author" content="Justin Ribeiro">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/default.css" id="theme">
+    <link rel="stylesheet" href="css/highlight-theme/obsidian.css">
+
+    <style>
+    /* JDR: not good practice, but it's a presentation...so let's roll with it */
+
+    
+    /* Layout Boundary for updating Glass stat pack */
+    #statpack {
+      left: 10px;
+      bottom: 10px;
+      width: 250px;
+      height: 100px;
+      overflow: hidden;
+      position: absolute;
+    }
+    
+    #glass-status {
+      position: relative;
+      z-index: 30;
+      bottom: 0;
+       padding: 0.5em;
+       vertical-align: top;
+      font-family: Lato, sans-serif;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      color: #fff;        
+     }
+     
+     #glass-status h1, h2 {
+       margin: 0.6em 0;
+     }
+    
+          
+     .li-data {
+       color: #96CA33;
+       font-weight: 800;
+       padding: 0 0.25em;
+     }
+     
+     .iconned {
+       padding-right: 0.6em !important;
+     }
+
+     /** Fix for FontAwesome w/Reveal **/
+    .reveal i.fa{
+         font-family: 'FontAwesome';
+         font-style: normal;
+         font-size: 100%;
+     }
+
+     .text-center {
+       text-align: center;
+     }
+
+     .reveal ul li, .reveal ol li  {
+       padding-bottom: 0.6em;
+     }
+
+     .reveal pre code {
+       max-height: none;
+     }
+
+    /* Notifications
+    -------------------------------------------------- */
+    #notification {
+      position:fixed;
+      z-index: 2000;
+      width: 100%;
+      display:none;
+      bottom: 0;
+    }
+
+    #notification-title, #notification-message {
+      margin: 0 0 20px 0;
+      color: #eeeeee;
+      font-family: Lato, sans-serif;
+      line-height: 0.9em;
+      letter-spacing: 0.02em;
+      text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    #notification-title {
+      font-size: 3em;
+    }
+
+    #notification-message {
+      font-size: 1.6em;
+    }
+
+    .notification-show {
+      display:block !important;
+    }
+
+    .notification-padding {
+      padding: 2em;
+    }
+
+    .notification-error {
+      background-color: #c65757;
+    }
+    .notification-warning {
+      background-color: #f3c93f;
+    }
+    .notification-info {
+      background-color: #85beee;
+    }
+
+
+    .notification-success {
+      background-color: #8cc657;
+    }
+    .notification-success > div > h3, .notification-error > div > h3 {
+      color: #fff;
+    }
+    .notification-success > div > p, .notification-error > div > p {
+      color: #fff;
+    }
+    
+    .temp {
+      color: #96CA33;
+      font-weight: 800;
+      padding: 0 0.25em;
+    }
+    #sensorOutputs div {
+      padding: 0.5em;
+    }
+    
+    .smaller {
+      padding: 0 !important;
+      font-size: 75% !important;
+    }
+    
+    </style>
+    
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+        <section>
+          <h1>Mirror API and beyond</h1>
+          <h3>GDG Oakdale</h3>
+          <p>
+            <a href="https://www.justinribeiro.com">Justin Ribeiro</a>
+            <br>
+            <i class="fa fa-envelope-o"></i> <a href="mailto:justin@stickmanventures.com"> justin@stickmanventures.com </a>
+          </p>
+          <br />
+          <p>
+            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="http://twitter.com/justinribeiro"> @justinribeiro</a>
+            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="http://"> +Justin Ribeiro</a>
+            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="http://"> justinribeiro</a>
+          </p>
+          <p>
+            Slides: <a href="http://goo.gl/" title="short url to these slides">http://goo.gl/</a>
+          </p>
+        </section>
+
+        <section>
+          <h2>What are we talking about today</h2>
+          <ol>
+            <li>Choices: Patterns and what nots</li>
+            <li>Dive into Mirror API</li>
+            <li>Making Mirror do more with App Engine</li>
+            <li>GDK and the web: oh, it's a thing</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Glass: not your average screen</h2>
+          <ol>
+            <li>You should be designing for Glass</li>
+            <li>Direct ports = not a great choice</li>
+            <li>Read-Learn-Expand: <a href="https://developers.google.com/glass/design/principles">Design Principles</a></li>
+          </ol>
+          <img src="">
+        </section>
+
+        <section>
+          <h2>Understanding the patterns</h2>
+          <ol>
+            <li>Periodic</li>
+            <li>Ongoing task</li>
+            <li>Immersion</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Periodic</h2>
+          <ul>
+            <li>Insert timeline cards into the timeline without invocation</li>
+            <li>Good case for notifications from an remote service</li>
+            <li>Most common case for Mirror API</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Ongoing task</h2>
+          <ul>
+            <li>Long running live cards</li>
+            <li>User can leave/return as needed</li>
+            <li>Only the GDK</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Immersion</h2>
+          <ul>
+            <li>Take over the timeline experience</li>
+            <li>Users leave by swiping down</li>
+            <li>Only the GDK (Android activities)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>What if my app doesn't fit the pattern?</h2>
+          <ul>
+            <li>Consider your end goal for your application</li>
+            <li>GDK: real-time, offline, access to the hardware</li>
+            <li>Mirror API: platform indepent, common infratructure, use built-in functionality</li>
+            <li>Hybrid approaches: Mirror card adds menu item that invokes intent to start</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>There is no one answer</h2>
+          <ul>
+            <li>OH: "Java is the only way to write for Glass".</li>
+            <li>OH: "Mirror API isn't powerful".</li>
+          </ul>
+          <h2>Both statements above = NOT TRUE</h2>
+        </section>
+
+        <section>
+          <h1>Decide for yourself, don't let others decide for you.</h1>
+          <h2>Only you know your goal and spec.</h2>
+        </section>
+
+        <section>
+          <h2>Jumping in to the Mirror API</h2>
+          <ul>
+            <li>You're platform independent! You can choose your language and platform.</li>
+            <li>You can make raw requests or for simplier access utilize the <a href="https://developers.google.com/discovery/libraries">Google APIs Client Libs</a> for your language</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Mirror API Setup</h2>
+          <ul>
+            <li>Create a project in the Google Developer Console (<a href="https://console.developers.google.com/project">https://console.developers.google.com/project</a>)</li>
+            <li>Enable the Mirror API and the Google+ API</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Why Google+ API?</h2>
+          <ul>
+            <li>You need a method to authenticate users</li>
+            <li>Older profile.info scope is deprecated (End of support: September 2014)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>OAuth</h2>
+          <ul>
+            <li>Create your Client ID for you app under APIs &amp; auth > Credentials </li>
+            <li>You can set the Redirect URI's to wherever your project will be dev/deployed</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Great! Let's fire something up!</h2>
+          <ul>
+            <li>Doing the sign in - Google+ Sign In button</li>
+            <li>Button implements JavaScript hooks in client side that call our server</li>
+          </ul>
+<pre><code>
+connectServer: function() {
+    console.log(this.authResult.code);
+    $.ajax({
+      type: 'POST',
+      url: "//" + window.location.host + '/connect?state=' + this.state,
+      contentType: 'application/octet-stream; charset=utf-8',
+      success: function(result) {
+        console.log(result);
+      },
+      processData: false,
+      data: this.authResult.code
+    });
+  }
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>Server handles the tokens</h2>
+<pre><code>
+try:
+    user_credentials = _oauth_flow().step2_exchange(request.data)
+except FlowExchangeError:
+    response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+# Set our session
+session['credentials'] = user_credentials
+session['user_id'] = user_credentials.id_token['sub']
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>Once we have tokens we get into Mirror API</h2>
+          <ul>
+            <li>Timeline</li>
+            <li>Menu</li>
+            <li>Subscriptions</li>
+          </ul>
+        </section>
+
+        <section>
+          <h1>I thought the Mirror API had more?</h1>
+          <h2>Yes, it does. But let's dive into the basics first.</h2>
+        </section>
+
+        <section>
+          <h2>The timeline and you: Insert a card</h2>
+          <ul>
+            <li>Timeline consists of cards or various types and styles</li>
+            <li>Inserting a welcome card with a user auth'ed Mirror service</li>
+          </ul>
+<pre><code>
+mirror_service = _authorized_mirror_service(user_credentials)
+
+mirror_service.timeline().insert(body={
+    'notification': {'level': 'DEFAULT'},
+    'text': 'Welcome to Glass! This is my very first timeline card insert.'
+  ).execute()
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>Timeline cards have lots of options</h2>
+          <ul>
+            <li>HTML (see <a href="https://developers.google.com/glass/design/style">Style Guidelines</a>)</li>
+          </ul>
+<pre><code>
+mirror_service.timeline().insert(body={
+    'notification': {'level': 'DEFAULT'},
+    'html': '<article><section><p class="text-auto-size">Welcome to 
+      <em class="yellow">Glass!</em> This is my very first timeline card insert.</p>
+      </section></article>'
+  ).execute()
+
+</code></pre>
+
+        </section>
+
+        <section>
+          <h2>Timeline cards: more options!</h2>
+          <ul>
+            <li>Location</li>
+<pre><code>
+mirror_service.timeline().insert(body={
+    'notification': {'level': 'DEFAULT'},
+    'location':  {
+      'latitude': 37.7692,
+      'longitude': 120.8569,
+      "displayName": "Season 6 Dreams Meetup",
+      "address": "Group Study Room F, Greendale Community College"
+    }
+  ).execute()
+
+</code></pre>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Timeline cards: more options!</h2>
+          <ul>
+            <li>Payload</li>
+<pre><code>
+mirror_service.timeline().insert(body={
+    'notification': {'level': 'DEFAULT'},
+    'text': 'Video time!',
+    'payload': 'http://mymystical.url/video.mp4',
+    'menuItems': [{'action': 'PLAY_VIDEO'}]
+  ).execute()
+
+</code></pre>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Was that a Menu Item in that last example?</h2>
+          <ul>
+            <li>Menu options give uses the ability to act on a timeline card</li>
+            <li>Lots of built in options: REPLY, DELETE, READ_ALOUD, NAVIGATE, OPEN_URI and many more</li>
+            <li>Can set custom menu options with CUSTOM that callback to a subscription</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>A basic MenuItem example</h2>
+<pre><code>
+mirror_service.timeline().insert(body={
+    'notification': {'level': 'DEFAULT'},
+    'text': 'Timeline card with a couple menu options.',
+    'menuItems': [
+        {'action': 'CUSTOM', 'id': 'my-id', 'values': [ { 'displayName': "My Menu Item" } ] },
+        {'action': 'DELETE'}] 
+    }).execute()
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>From Menu Actions to Subscriptions</h2>
+          <ul>
+            <li>When a user acts on a menu item, we can listen for those action via a Subscription</li>
+            <li>We set a callbackUrl that allows our application to receive a POST notification from the Mirror API.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>A sample subscription for timeline</h2>
+<pre><code>
+mirror_service.subscriptions().insert(body={
+   'collection': 'timeline',
+   'userToken': user_id,
+   'verifyToken': 'something_only_you_know',
+   'callbackUrl': 'https://my-project-id.appspot.com/myGlassCallback',
+   'operation': ['UPDATE']
+  }).execute()
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>Breaking it down</h2>
+          <ul>
+            <li>collection: timeline or location</li>
+            <li>userToken: something to id your user</li>
+            <li>verifyToken: something only you know to verify notification</li>
+            <li>operation: UPDATE, INSERT, DELETE</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Then there's callbackUrl</h2>
+          <ul>
+            <li>In dev, you can use the <a href="https://developers.google.com/glass/tools-downloads/subscription-proxy">SSL proxy</a></li>
+            <li>In prod, you have to use an SSL endpoint</li>
+            <li>The problem: no one wants to deploy remote even with a SSL proxy</li>
+            <li>Solution: <a href="https://ngrok.com/">ngork</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>ngork for the win</h2>
+          <ul>
+            <li>Allows you to create a reverse tunnel</li>
+            <li>Gives you an nice web panel to see incoming requests</li>
+            <li>Gives you an SSL endpoint</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>The code change is tiny</h2>
+<pre><code>
+mirror_service.subscriptions().insert(body={
+   'collection': 'timeline',
+   'userToken': user_id,
+   'verifyToken': 'something_only_you_know',
+   'callbackUrl': 'https://RANDOM.ngrok.com/myGlassCallback',
+   'operation': ['UPDATE']
+  }).execute()
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>Requests coming in</h2>
+
+        </section>
+
+        <section>
+          <h2>That's the crash course</h2>
+          <h1>I must do more!</h1>
+        </section>
+
+        <section>
+          <h2>Making Mirror shine</h2>
+          <ul>
+            <li>Mirror has a lot of power, we can send all kinds of sticky, relevent data</li>
+            <li>But how do we do that?</li>
+            <li>To the samples!</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Request: How do you send a card daily?</h2>
+          <ul>
+            <li>Daily sort of jobs generally require cron</li>
+            <li>If we're on our own boxes, we could schedule a script in crontab</li>
+            <li>If we're on App Engine, we can use App Engines Cron</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>A simple App Engine Cron job</h2>
+<pre><code>
+@glassdailycard.route('/dailyjob')
+def dailyjob():
+    today = datetime.date.today()
+    query_get_todays_card = CronCards.query(CronCards.date == today)
+    result_get_todays_card = query_get_todays_card.get()
+
+    # Do we have a card to send today?
+    if result_get_todays_card is not None:
+        timelinecard_body = {
+            'notification': {'level': 'DEFAULT'},
+            'text': result_get_todays_card.card,
+            'menuItems': [{'action': 'DELETE'}]
+        }
+
+        query_get_users = UserProperties.query()
+        for user in query_get_users.fetch():
+            user_credentials = _credentials_for_user(user.key.id()).get()
+            _authorized_mirror_service(user_credentials).timeline().insert(body=timelinecard_body).execute()
+
+    response = make_response("{}", 200)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>glass-daily-task</h2>
+          <ul>
+            <li>Simple starter project that shows basics of using App Engine Cron</li>
+            <li>Uses Google+ Sign-In</li>
+            <li>Repo: justinribeiro/glass-daily-task</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Request: How do you send a card random in future?</h2>
+          <ul>
+            <li>Generally requires a work queue of some type</li>
+            <li>If we're on our own boxes, we could use beanstalkd</li>
+            <li>If we're on App Engine, we can use App Engines Push Task Queue</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>A simple App Engine Cron job</h2>
+<pre><code>
+@glasstaskfuture.route('/glassCallback', methods=['POST'])
+def glassCallback():
+    """Our callback when the use selects out CUSTOM menu option on the start card."""
+    notification = request.data
+
+    if random.choice([True, False]):
+        # we're going to send it along to the task queue
+        google.appengine.api.taskqueue.add(
+          url='/taskHandler',
+          payload=notification,
+          countdown=60)
+    else:
+        now = datetime.datetime.now()
+        future = now + datetime.timedelta(0,60)
+        google.appengine.api.taskqueue.add(
+          url='/taskHandler',
+          payload=notification,
+          eta=future)
+
+    # It's cool Mirror API
+    #
+    # Remember, we must return 200 as quickly as we can!
+    #
+    return('OK')
+
+</code></pre>
+        </section>
+
+        <section>
+          <h2>glass-task-future</h2>
+          <ul>
+            <li>Simple starter project that shows basics of using App Engine Task Queue with a subscription callback</li>
+            <li>Uses Google+ Sign-In</li>
+            <li>Repo: justinribeiro/glass-task-future</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Request: Glass to the web</h2>
+          <ul>
+            <li>Lots of ways to do this</li>
+            <li>I heart the MQTT</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>All the Source</h2>
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
+        </section>
+
+        <section>
+          <h1>The End</h1>
+          <h3>Thank you!</h3>
+          <p>
+            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="http://twitter.com/justinribeiro"> @justinribeiro</a>
+            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="http://google.plus.justinribeiro.com"> +Justin Ribeiro</a>
+            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="http://github.justinribeiro.com"> justinribeiro </a>
+          </p>
+        </section>
+
+      </div>
+    </div>
+    
+    <!-- JDR: this creates a layout boundry so we don't reflow the whole page -->
+    <div id="statpack">
+      <aside id="glass-status">
+        <h1>Justin's Glass Timer</h1>
+        <h2><span id="glass-timer">30m 00s</span></h2>
+      </aside>
+    </div>
+    
+    <div id="notification" class="animated">
+        <div class="text-center notification-padding">
+            <h3 id="notification-title"></h3>
+            <p id="notification-message"></p>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+    <script src="js/jquery.websocket.callback.js"></script>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+      JDR = {
+        notification: {
+            defaultTimeout: 5000,
+            trigger: function (type, title, message, timeout, wait) {
+
+                $("#notification-title").html(title);
+                $("#notification-message").html(message);
+
+                var baseClasses = "fadeInUp notification-show";
+
+                // Always reset the state of the color
+                $("#notification").removeClass("notification-error notification-warning notification-success");
+
+                if (type == 1) {
+                    baseClasses = baseClasses + " notification-error"
+                }
+
+                if (type == 2) {
+                    baseClasses = baseClasses + " notification-warning"
+                }
+
+                if (type == 3) {
+                    baseClasses = baseClasses + " notification-success"
+                }
+
+                $("#notification").addClass(baseClasses);
+                        
+                if (wait == null) {
+                    if (timeout != null) {
+                        setTimeout(JDR.notification.hideHandler, timeout);
+                    } else {
+                        setTimeout(JDR.notification.hideHandler, this.defaultTimeout);
+                    }
+                }
+            },
+            hideHandler: function () {
+                $("#notification").addClass("fadeOutDown");
+
+                // the CSS3 animations are smooth...but having issue with callback on end
+                // TODO patch this to remove this hack
+                setTimeout(function () {
+                    $("#notification").removeClass().addClass("animated");
+                    $("#notification-title").html("");
+                    $("#notification-message").html("");
+                }, 2000);
+
+            }
+        },
+        utils: {
+
+          // Let's just keep this simple, no fancy
+          msToPretty: function( rawMs ) {
+                        
+            var ms = rawMs % 1000;
+            rawMs = (rawMs - ms) / 1000;
+
+            var secs = rawMs % 60;
+            rawMs = (rawMs - secs) / 60;
+            
+            var mins = rawMs % 60;
+
+            return mins + 'm ' + secs + 's ' + ms + 'ms ';
+          }
+        },
+        glass: {
+          ws: null,
+          glassUpdateDomElement: null,
+          onOpen: function ( value ) {
+            JDR.notification.trigger(3,
+                "Connected to Websocket",
+                "Now listening for data from the broker"
+            );
+          },
+          onMessage: function ( value ) {
+
+            var obj = jQuery.parseJSON(value);
+
+            if (typeof Number(obj.message) === 'number'){
+              var prettyTime = JDR.utils.msToPretty(obj.message);
+              JDR.glass.glassUpdateDomElement[0].textContent = prettyTime;
+            }
+
+          }
+        }
+      };
+
+      $( document ).ready(function() {
+
+        var cblocks = document.querySelectorAll("pre code");
+        
+        if(cblocks.length) {
+          for(var i=0, len=cblocks.length; i<len; i++) {
+            var dom = cblocks[i];
+            var html = dom.innerHTML;
+            html = html.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+            dom.innerHTML = html;
+          }
+        }
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Parallax scrolling
+        // parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+        // parallaxBackgroundSize: '2100px 900px',
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/highlight/highlight.pack.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+        ]
+      });
+
+        // This is going to get updated a lot, let's just hang on to it
+        JDR.glass.glassUpdateDomElement = $("#glass-timer");
+
+        // Connect to the demo glass socket
+        JDR.glass.ws = $.websocket({ 
+            url: "ws://ec2-50-18-226-240.us-west-1.compute.amazonaws.com:8899/glass"
+        });
+
+        JDR.glass.ws.topic( "websocket.onOpen" ).subscribe( JDR.glass.onOpen );
+        JDR.glass.ws.topic( "websocket.onMessage" ).subscribe( JDR.glass.onMessage );
+          
+      });
+
+    </script>
+
+  </body>
+</html>

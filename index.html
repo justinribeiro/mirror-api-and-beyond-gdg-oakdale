@@ -184,12 +184,12 @@
           </p>
           <br />
           <p>
-            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="http://twitter.com/justinribeiro"> @justinribeiro</a>
-            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="http://"> +Justin Ribeiro</a>
-            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="http://"> justinribeiro</a>
+            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="https://twitter.com/justinribeiro"> @justinribeiro</a>
+            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="https://plus.google.com/+JustinRibeiro/posts"> +Justin Ribeiro</a>
+            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="https://github.com/justinribeiro"> justinribeiro</a>
           </p>
           <p>
-            Slides: <a href="http://goo.gl/" title="short url to these slides">http://goo.gl/</a>
+            Slides: <a href="http://goo.gl/1O5JxR" title="short url to these slides">http://goo.gl/1O5JxR</a>
           </p>
         </section>
 
@@ -232,12 +232,22 @@
         </section>
 
         <section>
+            <h2>From Google's Glass Design Docs - Periodic</h2>
+            <img src="images/periodic-notifications-pattern.png">
+        </section>
+
+        <section>
           <h2>Ongoing task</h2>
           <ul>
             <li>Long running live cards</li>
             <li>User can leave/return as needed</li>
             <li>Only the GDK</li>
           </ul>
+        </section>
+
+        <section>
+            <h2>From Google's Glass Design Docs - Ongoing</h2>
+            <img src="images/passive-ongoing-pattern.png">
         </section>
 
         <section>
@@ -248,6 +258,13 @@
             <li>Only the GDK (Android activities)</li>
           </ul>
         </section>
+
+        <section>
+            <h2>From Google's Glass Design Docs - Ongoing</h2>
+            <img src="images/immersion-pattern.png">
+        </section>
+
+
 
         <section>
           <h2>What if my app doesn't fit the pattern?</h2>
@@ -287,13 +304,15 @@
             <li>Create a project in the Google Developer Console (<a href="https://console.developers.google.com/project">https://console.developers.google.com/project</a>)</li>
             <li>Enable the Mirror API and the Google+ API</li>
           </ul>
+          <img src="images/mirror-api-on.png">
         </section>
 
         <section>
           <h2>Why Google+ API?</h2>
           <ul>
             <li>You need a method to authenticate users</li>
-            <li>Older profile.info scope is deprecated (End of support: September 2014)</li>
+            <li>Older userinfo.profile scope is deprecated (End of support: September 2014)</li>
+            <li>See <a href="https://developers.google.com/+/api/auth-migration#oauth2login">https://developers.google.com/+/api/auth-migration#oauth2login</a></li>
           </ul>
         </section>
 
@@ -303,6 +322,7 @@
             <li>Create your Client ID for you app under APIs &amp; auth > Credentials </li>
             <li>You can set the Redirect URI's to wherever your project will be dev/deployed</li>
           </ul>
+          <img src="images/create-client-id.png">
         </section>
 
         <section>
@@ -501,6 +521,21 @@ mirror_service.subscriptions().insert(body={
             <li>Gives you an nice web panel to see incoming requests</li>
             <li>Gives you an SSL endpoint</li>
           </ul>
+<pre><code>
+ ~ $ ngrok -authtoken YOURTOKEN TARGETPORT
+ ~ $ ngrok 8080
+
+ </code></pre>
+        </section>
+
+        <section>
+          <h2>Ngrok in action</h2>
+          <img src="images/screenshot-20140328-ngrok-mirror-callback.png">
+        </section>
+
+        <section>
+          <h2>Ngrok viewing Mirror callback data</h2>
+          <img src="images/screenshot-20140328-ngrokpanel.png">
         </section>
 
         <section>
@@ -515,11 +550,6 @@ mirror_service.subscriptions().insert(body={
   }).execute()
 
 </code></pre>
-        </section>
-
-        <section>
-          <h2>Requests coming in</h2>
-
         </section>
 
         <section>
@@ -579,7 +609,7 @@ def dailyjob():
           <ul>
             <li>Simple starter project that shows basics of using App Engine Cron</li>
             <li>Uses Google+ Sign-In</li>
-            <li>Repo: justinribeiro/glass-daily-task</li>
+            <li>Repo: <a href="https://github.com/justinribeiro/glass-daily-card">justinribeiro/glass-daily-task</a></li>
           </ul>
         </section>
 
@@ -628,7 +658,7 @@ def glassCallback():
           <ul>
             <li>Simple starter project that shows basics of using App Engine Task Queue with a subscription callback</li>
             <li>Uses Google+ Sign-In</li>
-            <li>Repo: justinribeiro/glass-task-future</li>
+            <li>Repo: <a href="https://github.com/justinribeiro/glass-task-future">justinribeiro/glass-task-future</a></li>
           </ul>
         </section>
 
@@ -636,16 +666,28 @@ def glassCallback():
           <h2>Request: Glass to the web</h2>
           <ul>
             <li>Lots of ways to do this</li>
-            <li>I heart the MQTT</li>
+            <li>I heart the MQTT - let's use a broker!</li>
+            <li>Glass > Broker > WebSocket > You Browser</li>
           </ul>
         </section>
 
         <section>
-          <h2>All the Source</h2>
+          <h2>glass-gdk-timer-mqtt</h2>
           <ul>
-            <li></li>
-            <li></li>
-            <li></li>
+            <li>Modified Glass GDK timer example to use <a href="http://www.eclipse.org/paho/">Eclipse Paho</a></li>
+            <li>Connects to remote Broker on EC2 (<a href="http://mosquitto.org/">Mosquitto</a>)</li>
+            <li>WebSocket created in python via <a href="https://code.google.com/p/pywebsocket/">pywebsocket</a></li>
+            <li>Connected to web via <a href="https://github.com/justinribeiro/jquery-websocket-callback">jquery-websocket-callback</a></li>
+            <li>Repo: <a href="https://github.com/justinribeiro/glass-gdk-timer-mqtt">justinribeiro/glass-gdk-timer-mqtt</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Further reading / resources</h2>
+          <ul>
+            <li>My Articles (PHP) @ Safari Books: <a href="http://blog.safaribooksonline.com/2014/03/05/building-glassware-mirror-api/">#1</a>, <a href="http://blog.safaribooksonline.com/2014/03/19/using-subscriptions-contacts-google-glass/">#2</a>, <a href="http://blog.safaribooksonline.com/2014/03/17/quick-tip-using-mirror-api-glass/">#3</a></li>
+            <li>More Writing @ <a href="https://www.justinribeiro.com/">My Blog</a></li>
+            <li><a href="https://developers.google.com/glass/">Google Developers - Glass</a>, <a href="http://stackoverflow.com/questions/tagged/google-glass">StackoverFlow</a></li>
           </ul>
         </section>
 
@@ -653,9 +695,9 @@ def glassCallback():
           <h1>The End</h1>
           <h3>Thank you!</h3>
           <p>
-            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="http://twitter.com/justinribeiro"> @justinribeiro</a>
-            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="http://google.plus.justinribeiro.com"> +Justin Ribeiro</a>
-            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="http://github.justinribeiro.com"> justinribeiro </a>
+            <i class="fa fa-twitter"></i> <a class="iconned" rel="me" href="https://twitter.com/justinribeiro"> @justinribeiro</a>
+            <i class="fa fa-google-plus"></i> <a class="iconned" rel="me" href="https://plus.google.com/+JustinRibeiro/posts"> +Justin Ribeiro</a>
+            <i class="fa fa-github"></i> <a class="iconned" rel="me" href="https://github.com/justinribeiro"> justinribeiro </a>
           </p>
         </section>
 
